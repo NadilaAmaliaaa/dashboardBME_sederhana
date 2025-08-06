@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f2f2f2;
+    }
+
+    header {
+      background: #2d6cdf;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .card .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .zone-card {
+      background: white;
+      padding: 20px;
+      border-left: 5px solid #10b981;
+      border-radius: 8px;
+    }
+
+    .plants-container {
+      margin-top: 30px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    thead {
+      background: #e3f0ff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌦️ ESP32 Dashboard</h1>
+  </header>
+
+  <div class="dashboard">
+    <div class="card">
+      <div class="label">Suhu (°C)</div>
+      <div id="bme-temperature">--</div>
+    </div>
+    <div class="card">
+      <div class="label">Tekanan (hPa)</div>
+      <div id="bme-pressure">--</div>
+    </div>
+    <div class="card">
+      <div class="label">Ketinggian (mdpl)</div>
+      <div id="bme-altitude">--</div>
+    </div>
+    <div class="card">
+      <div class="label">Zona</div>
+      <div id="zoneName">--</div>
+    </div>
+  </div>
+
+  <div class="plants-container">
+    <h3>🌱 Rekomendasi Tanaman</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Zona</th>
+          <th>Nama</th>
+          <th>Keterangan</th>
+          <th>Latin</th>
+          <th>Suhu Optimal</th>
+          <th>Kelembaban Optimal</th>
+        </tr>
+      </thead>
+      <tbody id="data-list">
+        <!-- Data tanaman akan dimuat di sini -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="/static/ppt.js"></script>
+</body>
+</html>
