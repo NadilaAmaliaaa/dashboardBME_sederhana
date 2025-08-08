@@ -1,42 +1,47 @@
-from sklearn.datasets import load_iris
-from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from imblearn.over_sampling import SMOTE
-from imblearn.pipeline import Pipeline
-import numpy as np
-import pandas as pd
 from sklearn.model_selection import train_test_split
+import pandas as pd
 import joblib
 
 # Load data
 data = pd.read_csv('smart_farm_zoning_dataset.csv')
-X = data[['temperature', 'pressure', 'altitude']]  
+X = data[['temperature', 'pressure', 'altitude']]
 y = data['zone_class']
 
-# StandardScaler + SMOTE + KNN
-pipeline = Pipeline([
-    ('scaler', StandardScaler()),
-    ('smote', SMOTE(random_state=42)),
-    ('knn', KNeighborsClassifier(n_neighbors=3))  # Ganti k jika mau eksperimen
-])
-
+# Split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-pipeline.fit(X_train, y_train)
-y_pred = pipeline.predict(X_test)
+# Standarisasi
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Latih model
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train_scaled, y_train)
+
+# Simpan model dan scaler
+joblib.dump(knn, 'knn_model.pkl')
+joblib.dump(scaler, 'scaler.pkl')
+
+# Prediksi & evaluasi
+y_pred = knn.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_pred)
-print("Accuracy on entire dataset:", acc)
+print("Accuracy:", acc)
 
-joblib.dump(pipeline, 'knn_model_smart_farm.pkl')
 
-# Load model
-model_loaded = joblib.load('knn_model_smart_farm.pkl')
+# Load model dan scaler
+model = joblib.load('knn_model.pkl')
+scaler = joblib.load('scaler.pkl')
 
-# Data baru
-data_baru = [[30.5, 1013.25, 10.0]]  # contoh: suhu, tekanan, ketinggian
+# Data baru: [temperature, pressure, altitude]
+data_baru = [[30.5, 1013.25, 10.0]]
+
+# Standarisasi data baru
+data_baru_scaled = scaler.transform(data_baru)
 
 # Prediksi
-prediksi = model_loaded.predict(data_baru)
+prediksi = model.predict(data_baru_scaled)
 print("Hasil Prediksi:", prediksi[0])
